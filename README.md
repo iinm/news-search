@@ -1,5 +1,7 @@
 授業の課題
 
+![alt tag](https://raw.githubusercontent.com/iinm/news-search/master/screenshot.png)
+
 ```
 lein run -m news-search.script.tf
 lein run -m news-search.script.df
