@@ -74,3 +74,9 @@
        (into {})))
 
 (defn id->tfidf [id] (-> id id->tfidfpath load-tf))
+
+(defn id->text [id]
+  (-> (format "%s/txt/%s.txt" data-dirname id)
+      slurp str/trim))
+
+(def id->text-mem (memoize id->text))
