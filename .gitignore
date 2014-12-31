@@ -11,3 +11,4 @@ pom.xml.asc
 *.tgz
 *~
 *.swp
+*.path
