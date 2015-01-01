@@ -7,4 +7,5 @@
   (let [results (search q-terms)]
     (do
       (println "[検索結果]" (count results) "件見つかりました．")
-      (doseq [[id score] results] (println (str id "\t" score))))))
+      (println "-----------------------------")
+      (doseq [[id score] results] (println (str id "\t(" score ")"))))))

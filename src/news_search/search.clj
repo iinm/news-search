@@ -1,6 +1,6 @@
 (ns news-search.search
   (:require
-    [news-search.data :refer :all]
+    [news-search.data :as data]
     [news-search.nlp :as nlp]
     [clojure.java.io :as io]
     [clojure.string :as str]
@@ -33,8 +33,8 @@
 (defn search [q-terms]
   (let [q-terms-split (map nlp/tokenize q-terms)
         q-tf (frequencies (apply concat q-terms-split))]
-    (->> doc-ids
-         (map (fn [id] {:id id :tfidf-map (id->tfidf id)}))
+    (->> data/doc-ids
+         (map (fn [id] {:id id :tfidf-map (data/id->tfidf id)}))
          (map (fn [doc]
                 (assoc doc :score (cos-sim q-tf (:tfidf-map doc)))))
          (filter (comp pos? :score))
