@@ -2,11 +2,18 @@
 
 ![alt tag](https://raw.githubusercontent.com/iinm/news-search/master/screenshot.png)
 
+---
+index
+
 ```
 lein run -m news-search.script.tf
 lein run -m news-search.script.df
 lein run -m news-search.script.tfidf
+lein run -m news-search.script.inverted-index
 ```
+
+---
+test
 
 ```
 % lein run -m news-search.script.search 中国 鉄道
