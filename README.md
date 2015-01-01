@@ -74,4 +74,8 @@ benchmark (msec)
 ---
 おまけ: インタフェース
 
+```
+% java -jar target/uberjar/news-search-0.1.0-SNAPSHOT-standalone.jar 8888
+```
+
 ![alt tag](https://raw.githubusercontent.com/iinm/news-search/master/screenshot.png)
