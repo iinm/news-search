@@ -1,7 +1,5 @@
 授業の課題
 
-![alt tag](https://raw.githubusercontent.com/iinm/news-search/master/screenshot.png)
-
 ---
 index
 
@@ -72,3 +70,8 @@ benchmark (msec)
   ["0300" 378.38528]),	  ["0300" 349.05695]),	  ["0300" 15.5233]),
  :all-avg 373.00952}	 :all-avg 79.30465}	 :all-avg 2.5563533}
 ```
+
+---
+おまけ: インタフェース
+
+![alt tag](https://raw.githubusercontent.com/iinm/news-search/master/screenshot.png)
