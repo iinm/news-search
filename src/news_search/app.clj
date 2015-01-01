@@ -1,6 +1,6 @@
  (ns news-search.app
   (:require
-    [news-search.search :as search]
+    [news-search.search-cache :as search]
     [news-search.data :as data]
     [clojure.java.io :as io]
     [clojure.string :as str]
