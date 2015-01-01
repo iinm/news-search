@@ -23,19 +23,26 @@ $(function() {
   var List = Backbone.Collection.extend({
     models: Item,
 
+    //defaults: function() {
+    //  return {
+    //    updating: false
+    //  };
+    //},
+
     initialize: function() {
       _.bindAll(this, 'setData', 'update', 'reload');
       this.on('change:property', this.reload);
     },
 
     reload: function() {
+      console.log('reload');
       items = this.items;
       this.reset();
       _.each(items, this.setData);
     },
 
     setData: function(doc) {
-      console.log(doc);
+      //console.log(doc);
       var item = new Item(doc);
       item.set({head: item.get('text').slice(0, 50),
                 score: Math.round(item.get('score')*100)/100});
@@ -43,6 +50,7 @@ $(function() {
     },
 
     update: function(q) {
+      this.reset();
       console.log('input: ' + q);
       setData = this.setData;
       $.get('search', {q: q},
@@ -61,7 +69,7 @@ $(function() {
     bodyTemplate: _.template($('#body-template').html()),
 
     events: {
-      'click .btn': 'show'
+      'click .panel-heading': 'show'
     },
 
     initialize: function() {
@@ -94,13 +102,30 @@ $(function() {
 
     initialize: function() {
       _.bindAll(this, 'render', 'search', 'appendItem', 'searchOnEnter');
+      this.collection = new List();
+      this.listenTo(this.collection, 'add', this.render);
+      //this.listenTo(this.collection, 'reset', this.render);
     },
 
     render: function() {
-      //if (!_.isEmpty(this.collection.models))
+      if (_.isEmpty(this.collection.models)) {
+        numFound = 0;
+      } else {
+        numFound = this.collection.models.length;
+      }
+
       $('#results').html('');
-      $('#results').append('<p>' + this.collection.models.length + ' 件見つかりました．</p>');
-      $('#results').append('<div id="panel" class="panel panel-default"></div>');
+
+      //if (this.collection.updating) {
+      //  $('#results').append('<p>検索中...</p>');
+
+      //} else {
+        $('#results').append('<p>' + numFound +
+            ((numFound >= 25) ? '+' : '') +
+            ' 件見つかりました．</p>');
+        if (numFound != 0)
+          $('#results').append('<div id="panel" class="panel panel-default"></div>');
+      //}
 
       var self = this;
       _.each(this.collection.models,
@@ -113,9 +138,7 @@ $(function() {
 
     search: function() {
       q = this.input.val().trim();
-      this.collection = new List();
       this.collection.update(q);
-      this.listenTo(this.collection, 'add', this.render);
     },
 
     searchOnEnter: function(e) {
