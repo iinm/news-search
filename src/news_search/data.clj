@@ -26,6 +26,9 @@
 (defn id->tfidfpath [id]
   (format "%s/tfidf/%s.tfidf" data-dirname id))
 
+(def inverted-index-fname
+  (str data-dirname "/inverted_index"))
+
 (defn load-mcb [file]
   (letfn [(parse-line [line]
             (let [xs (str/split line #"\t|,")
@@ -74,9 +77,18 @@
        (into {})))
 
 (defn id->tfidf [id] (-> id id->tfidfpath load-tf))
+(def id->tfidf-mem (memoize id->tfidf))
 
 (defn id->text [id]
   (-> (format "%s/txt/%s.txt" data-dirname id)
       slurp str/trim))
 
 (def id->text-mem (memoize id->text))
+
+(defn load-inverted-index []
+  (with-open [r (-> inverted-index-fname
+                    io/reader java.io.PushbackReader.)]
+    (read r)))
+
+(def load-inverted-index-mem
+  (memoize load-inverted-index))
