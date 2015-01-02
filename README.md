@@ -38,7 +38,7 @@ test
 benchmark (msec)
 
 ```
-% paste -d"\t" search.txt search-ii.txt search-cache.txt
+% paste -d" " search.txt search-ii.txt search-cache.txt search-cache-pmap.txt
 {:query-avg {:query-avg {:query-avg {:query-avg
  (["0010" 709.6747]  (["0010" 44.04012]  (["0010" 1.1899629]  (["0010" 0.7922359]
   ["0020" 385.83575]   ["0020" 29.831276]   ["0020" 0.4626368]   ["0020" 0.3569094]
