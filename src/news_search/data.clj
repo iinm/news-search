@@ -36,7 +36,8 @@
                                :infl :conj :orig :read :pron)]
               (if (= "EOS" (first xs))
                 {:pos :EOS}
-                (into {} (map vector fields xs)))))]
+                (zipmap fields xs))))]
+                ;(into {} (map vector fields xs)))))]
                 ;(interleave fields xs))))]
     (with-open [rdr (-> file io/reader)]
       (doall
