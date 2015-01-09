@@ -7,7 +7,8 @@ $(function() {
         score: 0,
         head: "",
         text: "", // full text
-        show: false
+        show: false,
+        info: false // when not found
       };
     },
 
@@ -23,15 +24,9 @@ $(function() {
   var List = Backbone.Collection.extend({
     models: Item,
 
-    //defaults: function() {
-    //  return {
-    //    updating: false
-    //  };
-    //},
-
     initialize: function() {
       _.bindAll(this, 'setData', 'update', 'reload');
-      this.on('change:property', this.reload);
+      //this.on('change:property', this.reload);
     },
 
     reload: function() {
@@ -44,19 +39,31 @@ $(function() {
     setData: function(doc) {
       //console.log(doc);
       var item = new Item(doc);
-      item.set({head: item.get('text').slice(0, 50),
-                score: Math.round(item.get('score')*100)/100});
+      if (! item.get('info')) {
+        item.set({head: item.get('text').slice(0, 50),
+                  score: Math.round(item.get('score')*100)/100});
+      }
       this.add(item);
     },
 
     update: function(q) {
+      //this.reset({updating: true}); // collectionにはプロパティを設定できない?
       this.reset();
       console.log('input: ' + q);
       setData = this.setData;
       $.get('search', {q: q},
           function(data) {
-            _.each(data, setData);
+            if (! _.isEmpty(data)) {
+              _.each(data, setData);
+            }
+            //if (data.length == 0) {
+            else {
+              setData(
+                {score: 'info', head: '', text: 'Oops, not found.', info: true}
+              );
+            }
           });
+      //this.set({updating: false});
     }
 
   });
@@ -104,40 +111,41 @@ $(function() {
       _.bindAll(this, 'render', 'search', 'appendItem', 'searchOnEnter');
       this.collection = new List();
       this.listenTo(this.collection, 'add', this.render);
+      //this.listenTo(this.collection, 'all', this.render);
       //this.listenTo(this.collection, 'reset', this.render);
     },
 
     render: function() {
-      if (_.isEmpty(this.collection.models)) {
-        numFound = 0;
-      } else {
-        numFound = this.collection.models.length;
-      }
+      //if (_.isEmpty(this.collection.models)) {
+      //  numFound = 0;
+      //} else {
+      numFound = this.collection.where({info: false}).length;
+      //}
 
       $('#results').html('');
 
       //if (this.collection.updating) {
       //  $('#results').append('<p>検索中...</p>');
 
-      //} else {
-        $('#results').append('<p>' + numFound +
-            ((numFound >= 25) ? '+' : '') +
-            ' 件見つかりました．</p>');
-        if (numFound != 0)
-          $('#results').append('<div id="panel" class="panel panel-default"></div>');
-      //}
+      $('#results').append('<p>' + numFound +
+          ((numFound >= 25) ? '+' : '') + ' 件見つかりました．</p>');
 
-      var self = this;
-      _.each(this.collection.models,
-          function(item) {
-            self.appendItem(item);
-          }, this);
+      if (numFound != 0) {
+        $('#results').append('<div id="panel" class="panel panel-default"></div>');
+        var self = this;
+        _.each(this.collection.models,
+            function(item) {
+              self.appendItem(item);
+            }, this);
+      }
     },
 
     input: $('input#q'),
 
     search: function() {
       q = this.input.val().trim();
+      //this.collection = new List();
+      //this.listenTo(this.collection, 'add', this.render);
       this.collection.update(q);
     },
 
