@@ -158,7 +158,7 @@ $(function() {
       console.log('input:' + e.keyCode);
       val = this.input.val().trim();
       if (e.keyCode == 16) return; // 全角スペース
-      if (37 <= e.keyCode && e.keyCode <= 40) return; // 矢印
+      if (e.keyCode == 37 && e.keyCode == 40) return; // 矢印
       if (! val) return;
       if (val == this.oldKey) {
         console.log('same keyword');
