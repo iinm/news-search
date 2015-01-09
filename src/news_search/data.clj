@@ -81,8 +81,8 @@
 (def id->tfidf-mem (memoize id->tfidf))
 
 (defn id->text [id]
-  (-> (format "%s/txt/%s.txt" data-dirname id)
-      slurp str/trim))
+  (->> (format "%s/txt/%s.txt" data-dirname id)
+       slurp str/trim (take 200) (apply str)))
 
 (def id->text-mem (memoize id->text))
 

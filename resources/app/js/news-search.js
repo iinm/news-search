@@ -49,7 +49,7 @@ $(function() {
     update: function(q) {
       //this.reset({updating: true}); // collectionにはプロパティを設定できない?
       this.reset();
-      console.log('input: ' + q);
+      console.log('query: ' + q);
       setData = this.setData;
       $.get('search', {q: q},
           function(data) {
@@ -98,18 +98,22 @@ $(function() {
     }
   });
 
+  var Input = Backbone.Model.extend();
+
   var ListView = Backbone.View.extend({
 
     el: $('body'), // ????? bodyじゃないと動かない．
 
     events: {
       'click button#go': 'search',
-      'keypress input#q': 'searchOnEnter'
+      //'keypress input#q': 'searchOnEnter',
+      'keyup input#q': 'searchOnEnter'
     },
 
     initialize: function() {
       _.bindAll(this, 'render', 'search', 'appendItem', 'searchOnEnter');
       this.collection = new List();
+      this.oldKey = '';
       this.listenTo(this.collection, 'add', this.render);
       //this.listenTo(this.collection, 'all', this.render);
       //this.listenTo(this.collection, 'reset', this.render);
@@ -149,10 +153,19 @@ $(function() {
       this.collection.update(q);
     },
 
-    searchOnEnter: function(e) {
-      if (e.keyCode != 13) return;
-      if (!this.input.val().trim()) return;
+    searchOnEnter: function(e) { // enterじゃなくても検索する．
+      //if (e.keyCode != 13) return;
+      console.log('input:' + e.keyCode);
+      val = this.input.val().trim();
+      if (e.keyCode == 16) return; // 全角スペース
+      if (37 <= e.keyCode && e.keyCode <= 40) return; // 矢印
+      if (! val) return;
+      if (val == this.oldKey) {
+        console.log('same keyword');
+        return;
+      }
       this.search();
+      this.oldKey = val;
     },
 
     appendItem: function(item) {
